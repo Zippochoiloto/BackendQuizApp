@@ -1,19 +1,19 @@
 const { MongoClient } = require("mongodb");
-const url = "mongodb://localhost:27017";
-const client = new MongoClient(url);
 
-const dbName = "Quizz_Management";
-const db = {}
+const url =
+  "mongodb+srv://traclam:lam123456@quizgame.lhbki.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(url);
+const dbName = "Quizz";
+const db = {};
 
 async function connectToDb() {
   await client.connect();
-  console.log("Connected successfully to server");
+  console.log("Connected successfully to Database");
   const database = client.db(dbName);
-  db.users = database.collection("Users");
 
-  // the following code examples can be pasted here...
+  db.qs = database.collection("Qs");
 
   return "done.";
 }
 
-module.exports = {connectToDb, db}
+module.exports = { connectToDb, db };
