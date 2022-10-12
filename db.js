@@ -3,7 +3,7 @@ const { MongoClient } = require("mongodb");
 const url =
   "mongodb+srv://traclam:lam123456@quizgame.lhbki.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(url);
-const dbName = "Quizz";
+const dbName = "QuizGame";
 const db = {};
 
 async function connectToDb() {
@@ -11,7 +11,10 @@ async function connectToDb() {
   console.log("Connected successfully to Database");
   const database = client.db(dbName);
 
-  db.qs = database.collection("Qs");
+  db.Admin = database.collection("Admin");
+  db.User = database.collection("User");
+  db.Question = database.collection("Question");
+  db.Answer = database.collection("Answer");
 
   return "done.";
 }
