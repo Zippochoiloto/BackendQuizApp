@@ -1,24 +1,18 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 5000;
 const bodyParser = require("body-parser");
-const { connectToDb, db } = require("./db");
-const categoryRouter = require("./router/category");
+const router = require("./routes");
+const {connectToDb, db} = require("./model/db");
+const categoryRouter = require("./routes/category");
 
-
-app.use(bodyParser.json({ extended: true }));
-
-app.get("/", (req, res) => {
-  res.send("Hello");
-  console.log("database", db);
-});
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/categories', categoryRouter)
 
-app.listen(port, (error) => {
-  if (error) {
-    return;
-  }
-  console.log(`Example app listening on port ${port}`);
-  connectToDb();
-});
+app.use("/", router);
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+    connectToDb();
+  });
