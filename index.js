@@ -3,6 +3,9 @@ const app = express();
 const port = 3000;
 const bodyParser = require("body-parser");
 const { connectToDb, db } = require("./db");
+const categoryRouter = require("./router/category");
+
+
 app.use(bodyParser.json({ extended: true }));
 
 app.get("/", (req, res) => {
@@ -10,6 +13,7 @@ app.get("/", (req, res) => {
   console.log("database", db);
 });
 
+app.use('/categories', categoryRouter)
 
 app.listen(port, (error) => {
   if (error) {

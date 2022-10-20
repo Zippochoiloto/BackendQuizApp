@@ -13,8 +13,8 @@ async function connectToDb() {
 
   db.Admin = database.collection("Admin");
   db.User = database.collection("User");
-  db.Question = database.collection("Question");
-  db.Answer = database.collection("Answer");
+  db.Quiz = database.collection("Quiz");
+  db.Categories = database.collection("Categories");
 
   return "done.";
 }
