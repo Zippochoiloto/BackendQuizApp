@@ -1,5 +1,5 @@
 const express = require("express");
-const { db } = require("../db");
+const { db } = require("../model/db");
 const categoryRouter = express.Router();
 
 categoryRouter.get("/", async (req, res) => {
@@ -39,69 +39,51 @@ categoryRouter.get("/", async (req, res) => {
   }
 });
 
-// categoryRouter.get("/quiz", async (req, res) => {
-//   try {
-//     const category = req.headers.category;
-//     let quiz;
-//     if (category) {
-//       quiz = await db.Quiz.find({
-//         category,
-//       })
-//         .sort({ order: 1 })
-//         .toArray();
-//     } else {
-//       quiz = await db.Quiz.find({}).sort({ order: 1 }).toArray();
-//     }
-//     res.status(201);
-//     res.json(quiz);
-//   } catch (error) {
-//     res.status(500);
-//     res.send("Something went wrong!");
-//   }
-// });
 
-// categoryRouter.get("/quiz", async (req, res) => {
-//   try {
-//     const name = req.headers.name;
-//     let quiz;
-//     if (name) {
-//       quiz = await db.Categories.aggregate([
-//         {
-//           $match: {name},
-//         },
-//         {
-//           $lookup: {
-//             from: "Quiz",
-//             localField: "_id",
-//             foreignField: "categoryId",
-//             as: "questions",
-//           },
-//         },
-//         {
-//           $unwind: {
-//             path: "$questions"
-//           }
-//         }, 
-//         // {
-//         //   $project: {
-//         //     _id: 0, 
-//         //     questions: 1,
-//         //   },
-//         // },
-//         // {
-//         //   $match: questions,
-//         // },
-//       ]).toArray();
-//     }
-//     // else {
-//     //   quiz = await db.Quiz.find({}).sort({ order: 1 }).toArray();
-//     // }
-//     res.status(201);
-//     res.json(quiz);
-//   } catch (error) {
-//     res.status(500);
-//     res.send("Something went wrong!");
-//   }
-// });
+categoryRouter.get("/quiz", async (req, res) => {
+  try {
+    const name = req.headers.name;
+    let array;
+    let quiz; 
+    if (name) {
+      array = await db.Categories.aggregate([
+        {
+          $match: {name},
+        },
+        {
+          $lookup: {
+            from: "Quiz",
+            localField: "_id",
+            foreignField: "categoryId",
+            as: "questions",
+          },
+        },
+        {
+          $unwind: {
+            path: "$questions"
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            questions: 1,
+          },
+        },
+      ]).toArray();
+
+      quiz = array.map((item) => {
+        return item.questions;
+      });
+    } else {
+      quiz = await db.Quiz.find({}).sort({ order: 1 }).toArray();
+    }
+
+    res.status(201);
+    res.json(quiz);
+  } catch (error) {
+    res.status(500);
+    res.send("Something went wrong!");
+  }
+});
 
 module.exports = categoryRouter;
