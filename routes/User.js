@@ -92,4 +92,18 @@ UserRouter.get("/profile", async (req, res) => {
   }
 });
 
+UserRouter.get("/top-winner", async (req, res) => {
+  try {
+    let topWinner;
+    topWinner = await db.User.find({}).skip(0).limit(10).sort({ score: -1 }).toArray();
+    
+    res.status(201);
+    res.json(topWinner);
+  } catch (error) {
+    res.status(500);
+    res.send("Something went wrong!");
+  }
+});
+
+
 module.exports = UserRouter;
