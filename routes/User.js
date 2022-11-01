@@ -84,7 +84,7 @@ UserRouter.get("/profile", async (req, res) => {
     } else {
       user = await db.User.find({}).toArray();
     }
-    res.status(201);
+    res.status(200);
     res.json(user);
   } catch (error) {
     res.status(500);
@@ -97,7 +97,7 @@ UserRouter.get("/top-winner", async (req, res) => {
     let topWinner;
     topWinner = await db.User.find({}).skip(0).limit(10).sort({ score: -1 }).toArray();
     
-    res.status(201);
+    res.status(200);
     res.json(topWinner);
   } catch (error) {
     res.status(500);
