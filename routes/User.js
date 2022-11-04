@@ -58,13 +58,13 @@ UserRouter.post("/login", async (req, res, next) => {
     if (!user)
       return res
         .status(400)
-        .json({ success: false, message: "Incorrect email or password" });
+        .json({ success: false, message: "Incorrect email" });
 
     const checkPassword = bcrypt.compareSync(password, user.password);
     if (!checkPassword)
       return res
         .status(400)
-        .json({ success: false, message: "Incorrect email or password" });
+        .json({ success: false, message: "Incorrect password" });
 
     const accessToken = jwt.sign({ userId: user["_id"] }, "sha");
     return res.json({ success: true, accessToken });
