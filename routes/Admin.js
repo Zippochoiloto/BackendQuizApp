@@ -2,8 +2,6 @@ const express = require("express");
 const { db } = require("../model/db");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-const { application } = require("express");
-const { ObjectId } = require("mongodb");
 const AdminRouter = express.Router();
 
 AdminRouter.post("/register", async (req, res, next) => {
@@ -36,4 +34,4 @@ AdminRouter.post("/register", async (req, res, next) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
-export default AdminRouter
+module.exports = AdminRouter
