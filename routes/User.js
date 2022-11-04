@@ -12,7 +12,7 @@ UserRouter.post("/register", async (req, res, next) => {
   if (!email || !username || !password)
     return res.status(400).json({
       success: false,
-      message: "Missing email or username or password or nickname",
+      message: "Missing email or username or password or username",
     });
 
   try {
@@ -58,13 +58,13 @@ UserRouter.post("/login", async (req, res, next) => {
     if (!user)
       return res
         .status(400)
-        .json({ success: false, message: "Incorrect email" });
+        .json({ success: false, message: "Incorrect email or password" });
 
     let checkPassword = await bcrypt.compare(password, user.password);
     if (!checkPassword)
       return res
         .status(400)
-        .json({ success: false, message: "Incorrect password" });
+        .json({ success: false, message: "Incorrect email or password" });
 
     const accessToken = jwt.sign({ userId: user["_id"] }, "sha");
     return res.json({ success: true, accessToken });
