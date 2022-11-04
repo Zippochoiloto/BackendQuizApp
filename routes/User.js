@@ -60,8 +60,7 @@ UserRouter.post("/login", async (req, res, next) => {
         .status(400)
         .json({ success: false, message: "Incorrect email" });
 
-        console.log(user)
-    const checkPassword = bcrypt.compare(password, user.password);
+    let checkPassword = await bcrypt.compare(password, user.password);
     if (!checkPassword)
       return res
         .status(400)
