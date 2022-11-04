@@ -45,26 +45,26 @@ UserRouter.post("/register", async (req, res, next) => {
 });
 
 UserRouter.post("/login", async (req, res, next) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!username || !password)
+  if (!email || !password)
     return res.status(400).json({
       success: false,
-      message: "Missing username or password ",
+      message: "Missing email or password ",
     });
 
   try {
-    const user = await db.Users.findOne({ username });
+    const user = await db.Users.findOne({ email });
     if (!user)
       res
         .status(400)
-        .json({ success: false, message: "Incorrect username or password" });
+        .json({ success: false, message: "Incorrect email or password" });
 
     const checkPassword = bcrypt.compareSync(password, user.password);
     if (!checkPassword)
       res
         .status(400)
-        .json({ success: false, message: "Incorrect username or password" });
+        .json({ success: false, message: "Incorrect email or password" });
 
     const accessToken = jwt.sign({ userId: user["_id"] }, "sha");
     res.json({ success: true, accessToken });
