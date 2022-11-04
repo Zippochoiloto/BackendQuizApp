@@ -14,7 +14,7 @@ AdminRouter.post("/register", async (req, res, next) => {
     });
 
   try {
-    let admin = await db.Users.findOne({ admin });
+    let admin = await db.Admin.findOne({ admin });
     if (user) {
       return res
         .status(400)
@@ -23,7 +23,7 @@ AdminRouter.post("/register", async (req, res, next) => {
 
     const newpassword = await bcrypt.hash(password, 10);
 
-    const newUser = await db.Users.insertOne({
+    const newUser = await db.Admin.insertOne({
       email,
       username,
       password: newpassword,
