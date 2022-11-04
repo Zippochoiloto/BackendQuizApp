@@ -7,7 +7,13 @@ const router = require("./routes");
 const {connectToDb, db} = require("./model/db");
 const categoryRouter = require("./routes/category");
 
-app.use(express.urlencoded({ extended: true }));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(bodyParser.json());
+// app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use('/categories', categoryRouter)

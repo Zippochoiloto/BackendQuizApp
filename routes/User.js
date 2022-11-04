@@ -16,7 +16,7 @@ UserRouter.post("/register", async (req, res, next) => {
     });
 
   try {
-    let user = await db.Users.findOne({ username });
+    let user = await db.User.findOne({ username });
     if (user) {
       return res
         .status(400)
@@ -32,7 +32,7 @@ UserRouter.post("/register", async (req, res, next) => {
 
     const newpassword = await bcrypt.hash(password, 10);
 
-    const newUser = await db.Users.insertOne({
+    const newUser = await db.User.insertOne({
       email,
       username,
       password: newpassword,
@@ -40,7 +40,7 @@ UserRouter.post("/register", async (req, res, next) => {
     const accessToken = jwt.sign({ userId: newUser.insertedId }, "sha");
     res.json({ success: true, accessToken });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -54,22 +54,22 @@ UserRouter.post("/login", async (req, res, next) => {
     });
 
   try {
-    const user = await db.Users.findOne({ email });
+    const user = await db.User.findOne({ email });
     if (!user)
-      res
+      return res
         .status(400)
         .json({ success: false, message: "Incorrect email or password" });
 
     const checkPassword = bcrypt.compareSync(password, user.password);
     if (!checkPassword)
-      res
+      return res
         .status(400)
         .json({ success: false, message: "Incorrect email or password" });
 
     const accessToken = jwt.sign({ userId: user["_id"] }, "sha");
-    res.json({ success: true, accessToken });
+    return res.json({ success: true, accessToken });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error" });
+    return res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -95,8 +95,12 @@ UserRouter.get("/profile", async (req, res) => {
 UserRouter.get("/top-winner", async (req, res) => {
   try {
     let topWinner;
-    topWinner = await db.User.find({}).skip(0).limit(10).sort({ score: -1 }).toArray();
-    
+    topWinner = await db.User.find({})
+      .skip(0)
+      .limit(10)
+      .sort({ score: -1 })
+      .toArray();
+
     res.status(200);
     res.json(topWinner);
   } catch (error) {
@@ -104,6 +108,5 @@ UserRouter.get("/top-winner", async (req, res) => {
     res.send("Something went wrong!");
   }
 });
-
 
 module.exports = UserRouter;
