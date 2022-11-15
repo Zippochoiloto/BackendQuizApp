@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
 const { db } = require("../model/db");
-const PRIVATE_KEY = require("../model/key")
+const jwtKey = require("../model/key")
 
 async function authmdw(req, res, next) {
   const token = req.headers.authorization.split(" ")[1];
   console.log(token)
   let decode;
   try {
-    decode = jwt.verify(token, PRIVATE_KEY);
+    decode = jwt.verify(token, jwtKey);
     console.log(decode)
   } catch (error) {
     res.json(error.message);

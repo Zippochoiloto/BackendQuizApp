@@ -5,7 +5,7 @@ var jwt = require("jsonwebtoken");
 const { application } = require("express");
 const { ObjectId } = require("mongodb");
 const AuthRouter = express.Router();
-const PRIVATE_KEY = require("../model/key")
+const jwtKey = require("../model/key")
 
 AuthRouter.post("/register", async (req, res, next) => {
   const { email, username, password } = req.body;
@@ -38,7 +38,7 @@ AuthRouter.post("/register", async (req, res, next) => {
       username,
       password: newpassword,
     });
-    const accessToken = jwt.sign({ userId: newUser.insertedId }, PRIVATE_KEY);
+    const accessToken = jwt.sign({ userId: newUser.insertedId }, jwtKey);
     res.json({ success: true, accessToken });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -67,7 +67,7 @@ AuthRouter.post("/login", async (req, res, next) => {
         .status(400)
         .json({ success: false, message: "Incorrect email or password" });
 
-    const accessToken = jwt.sign({ userId: user["_id"] }, PRIVATE_KEY);
+    const accessToken = jwt.sign({ userId: user["_id"] }, jwtKey);
     return res.json({ success: true, accessToken });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
