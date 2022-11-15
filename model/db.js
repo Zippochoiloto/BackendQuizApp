@@ -15,7 +15,6 @@ async function connectToDb() {
   db.User = database.collection("User");
   db.Quiz = database.collection("Quiz");
   db.Categories = database.collection("Categories");
-  db.Admin = database.collection("Admin");
 
   return "done.";
 }

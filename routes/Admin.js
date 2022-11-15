@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const AdminRouter = express.Router();
 
-AdminRouter.post("/register", async (req, res, next) => {
+AdminRouter.post("/register", async (req, res) => {
   const { email, username, password } = req.body;
 
   if (!email || !username || !password)
@@ -37,4 +37,5 @@ AdminRouter.post("/register", async (req, res, next) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+
 module.exports = AdminRouter
