@@ -10,7 +10,7 @@ AdminRouter.post("/register", async (req, res, next) => {
   if (!email || !username || !password)
     return res.status(400).json({
       success: false,
-      message: "Missing email or username or password or nickname",
+      message: "Missing email or username or password",
     });
 
   try {
