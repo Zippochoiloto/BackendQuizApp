@@ -13,7 +13,7 @@ AuthRouter.post("/register", async (req, res, next) => {
   if (!email || !username || !password)
     return res.status(400).json({
       success: false,
-      message: "Missing email or username or password or username",
+      message: "Missing email or username or password",
     });
 
   try {
@@ -41,7 +41,7 @@ AuthRouter.post("/register", async (req, res, next) => {
       avt: "", 
     });
     const accessToken = jwt.sign({ userId: newUser.insertedId }, jwtKey);
-    res.json({ success: true, accessToken });
+    res.json({ success: true});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
