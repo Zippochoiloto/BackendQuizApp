@@ -6,7 +6,7 @@ OverviewRouter.get("/", async (req, res) => {
     try {
         let data = {};
         let totalQuizes;
-        totalQuizes = await db.Quiz.find({}).toArray().length;
+        totalQuizes = await db.Quiz.find({}).toArray();
       //   data.totalUsers = await db.User.find({}).toArray().length;
       //   data.totalAdmins = await db.Admin.find({}).toArray().length;
       // data.totalCategories = await db.Categories.find({}).toArray().length;

@@ -55,7 +55,7 @@ UserRouter.get("/top-winner", async (req, res) => {
     res.json(topWinner);
   } catch (error) {
     res.status(500);
-    res.send("Something went wrong!");
+    res.json(error.message);
   }
 });
 
