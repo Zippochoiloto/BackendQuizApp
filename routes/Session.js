@@ -26,7 +26,7 @@ SessionRoute.get("/trending", async function (req, res) {
     for (let i = 0; i < session.length; i++) {
       TotalQuestioned += session[i].questionID.length;
       averageTime += session[i].answer_time;
-      totalUser.push(user_id);
+      totalUser.push(session[i].user_id);
     }
     averageTime /= session.length;
 

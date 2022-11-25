@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.use("/auth", AuthRouter)
 router.use("/user", authmdw, UserRouter);
+
 router.use("/questions", QuesRoute);
 router.use("/admin", AdminRouter);
 router.use("/session", SessionRoute);

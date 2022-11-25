@@ -37,6 +37,8 @@ AuthRouter.post("/register", async (req, res, next) => {
       email,
       username,
       password: newpassword,
+      score: +0,
+      avt: "", 
     });
     const accessToken = jwt.sign({ userId: newUser.insertedId }, jwtKey);
     res.json({ success: true, accessToken });
@@ -47,7 +49,7 @@ AuthRouter.post("/register", async (req, res, next) => {
 
 AuthRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
-
+  const msgBody = req.body
   if (!email || !password)
     return res.status(400).json({
       success: false,
@@ -56,19 +58,23 @@ AuthRouter.post("/login", async (req, res, next) => {
 
   try {
     const user = await db.User.findOne({ email });
-    if (!user)
+    if (!user) {
       return res
         .status(400)
         .json({ success: false, message: "Incorrect email or password" });
+    }
 
     let checkPassword = await bcrypt.compare(password, user.password);
-    if (!checkPassword)
+    
+    if (!checkPassword) {
       return res
         .status(400)
         .json({ success: false, message: "Incorrect email or password" });
+    }
 
-    const accessToken = jwt.sign({ userId: user["_id"] }, jwtKey);
-    return res.json({ success: true, accessToken });
+    const accessToken = jwt.sign( msgBody, jwtKey);
+    const userId = user._id
+    return res.json({ success: true, accessToken, userId });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

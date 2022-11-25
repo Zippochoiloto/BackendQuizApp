@@ -6,82 +6,39 @@ const { application } = require("express");
 const { ObjectId } = require("mongodb");
 const UserRouter = express.Router();
 
-UserRouter.post("/register", async (req, res, next) => {
-  const { email, username, password } = req.body;
-
-  if (!email || !username || !password)
-    return res.status(400).json({
-      success: false,
-      message: "Missing email or username or password or username",
-    });
-
-  try {
-    let user = await db.User.findOne({ username });
-    if (user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Username already taken" });
-    }
-
-    const newpassword = await bcrypt.hash(password, 10);
-
-    const newUser = await db.User.insertOne({
-      email,
-      username,
-      password: newpassword,
-    });
-    const accessToken = jwt.sign({ userId: newUser.insertedId }, "sha");
-    res.json({ success: true, accessToken });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
-
-UserRouter.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
-
-  if (!email || !password)
-    return res.status(400).json({
-      success: false,
-      message: "Missing email or password ",
-    });
-
-  try {
-    const user = await db.User.findOne({ email });
-    if (!user)
-      return res
-        .status(400)
-        .json({ success: false, message: "Incorrect email or password" });
-
-    let checkPassword = await bcrypt.compare(password, user.password);
-    if (!checkPassword)
-      return res
-        .status(400)
-        .json({ success: false, message: "Incorrect email or password" });
-
-    const accessToken = jwt.sign({ userId: user["_id"] }, "sha");
-    return res.json({ success: true, accessToken });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
-});
-
 UserRouter.get("/profile", async (req, res) => {
   try {
     const id = req.headers.id;
     let user;
+    let admin;
     if (id) {
       user = await db.User.findOne({
         _id: new ObjectId(id),
-      });
+      })
+      if (user) {
+        delete user.password
+        delete user._id
+      } else if (!user) {
+        admin = await db.Admin.findOne({
+          _id: new ObjectId(id),
+        });
+        if (admin) {
+          delete admin.password;
+          delete admin._id;
+        }
+      }
     } else {
-      user = await db.User.find({}).toArray();
+      if (req.userRole === "admin") {
+        user = await db.User.find({}).toArray();
+        // delete user.password;
+        // delete user._id;
+      }
     }
     res.status(200);
-    res.json(user);
+    res.json(user || admin);
   } catch (error) {
     res.status(500);
-    res.send("Something went wrong!");
+    res.send(error.message);
   }
 });
 
@@ -90,8 +47,8 @@ UserRouter.get("/top-winner", async (req, res) => {
     let topWinner;
     topWinner = await db.User.find({})
       .skip(0)
-      .limit(10)
       .sort({ score: -1 })
+      .limit(10)
       .toArray();
 
     res.status(200);
