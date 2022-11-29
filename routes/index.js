@@ -9,13 +9,13 @@ const UserRouter = require("./User");
 const router = express.Router();
 
 router.use("/auth", AuthRouter)
-// router.use("/user", authmdw, UserRouter);
-router.use("/user",  UserRouter);
+router.use("/user", authmdw, UserRouter);
+// router.use("/user",  UserRouter);
 
 
-router.use("/questions", QuesRoute);
-router.use("/admin", AdminRouter);
-router.use("/session", SessionRoute);
-router.use("/overview", OverviewRouter)
+router.use("/questions", authmdw, QuesRoute);
+router.use("/admin", authmdw, AdminRouter);
+router.use("/session", authmdw, SessionRoute);
+router.use("/overview", OverviewRouter);
 
 module.exports = router;
